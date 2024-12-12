@@ -1,0 +1,21 @@
+Code Breakdown:
+useMutation Hook:
+
+The useMutation hook is typically used for handling operations that modify data (e.g., POST, PUT, DELETE requests). It is part of the react-query library, which helps with data fetching and state management in React applications.
+Syntax: const mutation = useMutation(mutationFunction, { options });
+ApiClient.register:
+
+ApiClient.register refers to a function that handles the API request for registering a user. This function would send a request to the server (for example, a POST request to register a new user).
+In the context of your application, ApiClient.register should be a function that wraps the logic for making the registration request to the backend API.
+Options Passed to useMutation: The second argument passed to useMutation is an object containing various lifecycle hooks (onSuccess, onError, etc.) that react to the state of the mutation:
+
+onSuccess:
+This is a callback function that will be triggered if the mutation (API call) is successful.
+In this case, when the registration request is successful, it logs "Register Successfully!" to the console.
+onError:
+This is a callback function that will be triggered if the mutation (API call) fails.
+In this case, when the registration request fails, the error is logged to the console.
+How useMutation Works:
+
+When mutation.mutate() is called (typically in response to a user action, such as form submission), it will trigger the API call.
+After the API call, based on whether it succeeded or failed, the appropriate callback (onSuccess or onError) will be invoked.
