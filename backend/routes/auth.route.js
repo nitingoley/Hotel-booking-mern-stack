@@ -35,7 +35,7 @@ router.post(
       }
 
       //   access token
-      const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET_KEY, {
+      const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET_KEY, {
         expiresIn: "1d",
       });
 

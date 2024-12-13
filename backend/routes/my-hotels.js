@@ -65,4 +65,33 @@ router.post(
   }
 );
 
+// router.get("/", verifyToken, async (req, res) => {
+//   try {
+//     const userId = req.user?.id;
+//     if (!userId) {
+//       return res.status(400).json({ message: "User ID is missing" });
+//     }
+//     const hotels = await Hotel.find({ userId });
+//     res.json(hotels);
+//   } catch (error) {
+//     res.status(500).json({ message: "Something went wrong !" });
+//   }
+// });
+
+
+router.get("/", verifyToken, async (req, res) => {
+  try {
+    if (!req.userId) {
+      return res.status(400).json({ message: "User ID is missing" });
+    }
+
+    const hotels = await Hotel.find({ userId: req.userId }); // Match the user's ID
+    res.json(hotels);
+  } catch (error) {
+    console.error("Error fetching hotels:", error.message);
+    res.status(500).json({ message: "Something went wrong!" });
+  }
+});
+
+
 export default router;

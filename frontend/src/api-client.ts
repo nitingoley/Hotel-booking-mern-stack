@@ -1,6 +1,19 @@
 import { SignInFormData } from "./pages/Login";
 import { RegisterFormData } from "./pages/Register";
 
+export interface HotelType {
+  _id: string;
+  name: string;
+  city: string;
+  description: string;
+  country: string;
+  type: string;
+  pricePerNight: number;
+  adultCount: number;
+  childCount: number;
+  starRating: number;
+}
+
 const API_BASE_URL = import.meta.env.VITE_API_BASE || "";
 
 export const register = async (formData: RegisterFormData) => {
@@ -21,7 +34,7 @@ export const register = async (formData: RegisterFormData) => {
 };
 
 export const validateToken = async () => {
-  const response = await fetch(`${API_BASE_URL}/api/auth//validate-token`, {
+  const response = await fetch(`${API_BASE_URL}/api/auth/validate-token`, {
     credentials: "include",
   });
 
@@ -69,5 +82,19 @@ export const addMyHotel = async (hotelFormData: FormData) => {
   if (!response.ok) {
     throw new Error("Failed to add hotel");
   }
+  return response.json();
+};
+
+export const fetchMyHotels = async (): Promise<HotelType[]> => {
+  const response = await fetch(`${API_BASE_URL}/api/my-hotels`, {
+    credentials: "include",
+  });
+
+  if (!response.ok) {
+    const errorBody = await response.json()
+    console.error("Error fetching hotels:", errorBody);  // Log the error response body
+      throw new Error(`Error fetching hotels: ${errorBody.message || "Unknown error"}`);
+  }
+
   return response.json();
 };
