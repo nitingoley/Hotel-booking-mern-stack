@@ -19,3 +19,66 @@ How useMutation Works:
 
 When mutation.mutate() is called (typically in response to a user action, such as form submission), it will trigger the API call.
 After the API call, based on whether it succeeded or failed, the appropriate callback (onSuccess or onError) will be invoked.
+
+
+
+
+
+Code Explanation
+Pagination Setup:
+
+pageSize = 5: Specifies the number of hotel entries to be returned per page (in this case, 5).
+req.query.page: Retrieves the page number from the request query parameters (e.g., /search?page=2).
+pageNumber: Parses the page query parameter and defaults to page 1 if no parameter is provided.
+skip: Calculates how many entries to skip for the current page using the formula:
+skip
+=
+(
+pageNumber
+−
+1
+)
+×
+pageSize
+skip=(pageNumber−1)×pageSize
+Database Queries:
+
+Hotel.find().skip(skip).limit(pageSize):
+Retrieves a subset of hotels from the database.
+skip(skip): Skips over the entries from earlier pages.
+limit(pageSize): Restricts the number of returned entries to pageSize.
+Hotel.countDocuments(): Fetches the total number of hotel documents in the collection, which is used to calculate the total pages.
+Response Formatting:
+
+
+
+
+=
+⌈
+total
+/
+pageSize
+⌉
+pages=⌈total/pageSize⌉
+Error Handling:
+
+If an error occurs (e.g., database issues), a 500 status code is returned with an error message.
+The error is also logged to the console for debugging.
+Response:
+
+The final JSON response includes the list of hotels for the requested page and pagination details.
+Example Behavior
+If there are 12 hotels in the database and the client requests page 2 (/search?page=2):
+
+skip = (2 - 1) * 5 = 5 (skips the first 5 entries).
+limit = 5 (fetches the next 5 entries).
+Response:
+json
+Copy code
+{
+  "data": [...], // 5 hotel objects
+  "pagination": {
+    "total": 12,
+    "pages": 3
+  }
+}

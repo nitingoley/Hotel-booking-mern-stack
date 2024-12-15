@@ -91,9 +91,67 @@ export const fetchMyHotels = async (): Promise<HotelType[]> => {
   });
 
   if (!response.ok) {
-    const errorBody = await response.json()
-    console.error("Error fetching hotels:", errorBody);  // Log the error response body
-      throw new Error(`Error fetching hotels: ${errorBody.message || "Unknown error"}`);
+    const errorBody = await response.json();
+    console.error("Error fetching hotels:", errorBody); // Log the error response body
+    throw new Error(
+      `Error fetching hotels: ${errorBody.message || "Unknown error"}`
+    );
+  }
+
+  return response.json();
+};
+
+export const fetchHotelsById = async (hotelId: string): Promise<HotelType> => {
+  const response = await fetch(`${API_BASE_URL}/api/my-hotels/${hotelId}`, {
+    credentials: "include",
+  });
+  if (!response.ok) {
+    throw new Error("Error fetching hotel by id");
+  }
+  return response.json();
+};
+
+export const updateMyHotelById = async (hotelFormData: FormData) => {
+  const response = await fetch(
+    `${API_BASE_URL}/api/my-hotels/${hotelFormData.get("hotelId")}`,
+    {
+      method: "PUT",
+      body: hotelFormData,
+      credentials: "include",
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error("Failed to update");
+  }
+
+  return response.json();
+};
+
+export type SearchParams = {
+  destination: string;
+  checkIn: string;
+  checkOut: string;
+  adultCount: string;
+  childCount: string;
+  page: string;
+};
+
+export const searchHotels = async (searchParams: SearchParams) => {
+  const queryParmas = new URLSearchParams();
+  queryParmas.append("destination", searchParams.destination);
+  queryParmas.append("checkIn", searchParams.checkIn);
+  queryParmas.append("checkOut", searchParams.checkOut);
+  queryParmas.append("adultCount", searchParams.adultCount || "");
+  queryParmas.append("childCount", searchParams.childCount || "");
+  queryParmas.append("page", searchParams.page || "");
+
+  const response = await fetch(
+    `${API_BASE_URL}/api/hotels/search?${queryParmas}`
+  );
+
+  if (!response.ok) {
+    throw new Error("Error for fetching hotels");
   }
 
   return response.json();

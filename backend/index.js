@@ -8,6 +8,7 @@ import userRoute from "./routes/user.route.js";
 import cookieParser from "cookie-parser";
 import authRoutes from "./routes/auth.route.js";
 import hotelRoute from "./routes/my-hotels.js";
+import hotelSearchRoute from "./routes/hotel.js";
 import path from "path";
 import { fileURLToPath } from "url";
 import { v2 as cloudinary } from "cloudinary";
@@ -40,6 +41,8 @@ app.use(express.static(path.join(__dirname, "../frontend/dist")));
 app.use("/api/users", userRoute);
 app.use("/api/auth", authRoutes);
 app.use("/api/my-hotels", hotelRoute);
+app.use("/api/hotels", hotelSearchRoute);
+
 
 // any request redirect index.html page
 app.use("*", (req, res) => {
