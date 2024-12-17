@@ -82,3 +82,136 @@ Copy code
     "pages": 3
   }
 }
+
+
+
+
+                   *** Sorting approach *** 
+
+
+
+                   1. The Purpose of constructSearchQuery
+The function:
+
+Takes a queryParams object containing search filters like destination, adultCount, childCount, etc.
+Dynamically builds a query object (constructedQuery) that MongoDB can use to filter data from a collection (e.g., hotels).
+This approach makes the search feature flexible. If a user provides a filter, it’s added to the query. If not, it’s skipped.
+
+2. The Parameters and Their Handling
+ts
+Copy code
+interface QueryParams {
+  destination?: string;
+  adultCount?: string | number;
+  childCount?: string | number;
+  facilities?: string | string[];
+  types?: string | string[];
+  stars?: string | string[];
+  maxPrice?: string | number;
+}
+The QueryParams interface defines the expected structure of the incoming queryParams. Each property is optional (?) since users might not specify all filters.
+
+For example:
+
+destination: Where the user wants to go.
+adultCount: Number of adults required.
+facilities: Desired amenities like "pool" or "wifi."
+3. Constructing the Query
+a. Destination Filter:
+ts
+Copy code
+if (queryParams.destination) {
+  constructedQuery.$or = [
+    { city: new RegExp(queryParams.destination, "i") },
+    { country: new RegExp(queryParams.destination, "i") },
+  ];
+}
+What it does: Searches hotels where the city or country matches the destination string, ignoring case ("i" flag).
+Why RegExp? To allow partial and case-insensitive matching. For example, searching for "ind" will match "India" or "Indiana."
+b. Adult and Child Count:
+ts
+Copy code
+if (queryParams.adultCount) {
+  constructedQuery.adultCount = { $gte: parseInt(queryParams.adultCount.toString()) };
+}
+
+if (queryParams.childCount) {
+  constructedQuery.childCount = { $gte: parseInt(queryParams.childCount.toString()) };
+}
+What it does: Ensures the hotel can accommodate at least the specified number of adults or children.
+Why $gte? $gte means "greater than or equal to." If a user asks for adultCount=2, the query will find hotels with at least 2 adults.
+c. Facilities Filter:
+ts
+Copy code
+if (queryParams.facilities) {
+  constructedQuery.facilities = {
+    $all: Array.isArray(queryParams.facilities)
+      ? queryParams.facilities
+      : [queryParams.facilities],
+  };
+}
+What it does: Filters hotels that have all the requested facilities (e.g., pool, gym, free parking).
+Why $all? MongoDB ensures the hotel has all the requested facilities when $all is used.
+d. Types Filter:
+ts
+Copy code
+if (queryParams.types) {
+  constructedQuery.type = {
+    $in: Array.isArray(queryParams.types) ? queryParams.types : [queryParams.types],
+  };
+}
+What it does: Filters hotels that match one or more of the specified types (e.g., "luxury," "budget").
+Why $in? $in checks if the type field matches any of the values in the array.
+e. Star Rating Filter:
+ts
+Copy code
+if (queryParams.stars) {
+  const starRatings = Array.isArray(queryParams.stars)
+    ? queryParams.stars.map((star: string) => parseInt(star))
+    : parseInt(queryParams.stars);
+
+  constructedQuery.starRating = { $in: starRatings };
+}
+What it does: Filters hotels with specific star ratings (e.g., 3, 4, or 5 stars).
+Why Array Handling? If the user provides multiple star ratings, we map each one to a number.
+f. Price Filter:
+ts
+Copy code
+if (queryParams.maxPrice) {
+  constructedQuery.pricePerNight = {
+    $lte: parseInt(queryParams.maxPrice.toString()),
+  };
+}
+What it does: Ensures the price per night is less than or equal to the specified maximum.
+Why $lte? $lte means "less than or equal to," which limits results to affordable hotels.
+4. Final Query
+The constructed query combines all the filters:
+
+ts
+Copy code
+return constructedQuery;
+If queryParams contains:
+
+json
+Copy code
+{
+  "destination": "paris",
+  "adultCount": "2",
+  "maxPrice": "150"
+}
+The query becomes:
+
+json
+Copy code
+{
+  "$or": [
+    { "city": /paris/i },
+    { "country": /paris/i }
+  ],
+  "adultCount": { "$gte": 2 },
+  "pricePerNight": { "$lte": 150 }
+}
+5. Why Use This Approach?
+Dynamic Filtering: The query adjusts based on which parameters the user provides.
+Scalability: New filters can be added easily.
+Optimized for MongoDB: Operators like $or, $gte, and $all ensure efficient querying.

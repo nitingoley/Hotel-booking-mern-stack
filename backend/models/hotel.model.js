@@ -25,6 +25,10 @@ const HotelSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  adultCount: {  // Added adultCount field
+    type: Number,
+    required: true,
+  },
   childCount: {
     type: Number,
     required: true,

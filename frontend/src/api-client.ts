@@ -129,22 +129,39 @@ export const updateMyHotelById = async (hotelFormData: FormData) => {
 };
 
 export type SearchParams = {
-  destination: string;
-  checkIn: string;
-  checkOut: string;
-  adultCount: string;
-  childCount: string;
-  page: string;
+  destination?: string;
+  checkIn?: string;
+  checkOut?: string;
+  adultCount?: string;
+  childCount?: string;
+  page?: string;
+  facilities?: string[];
+  types?: string[];
+  stars?: string[];
+  maxPrice?: string;
+  sortOption?: string;
 };
 
 export const searchHotels = async (searchParams: SearchParams) => {
   const queryParmas = new URLSearchParams();
-  queryParmas.append("destination", searchParams.destination);
-  queryParmas.append("checkIn", searchParams.checkIn);
-  queryParmas.append("checkOut", searchParams.checkOut);
+  queryParmas.append("destination", searchParams.destination || "");
+  queryParmas.append("checkIn", searchParams.checkIn || "");
+  queryParmas.append("checkOut", searchParams.checkOut || "");
   queryParmas.append("adultCount", searchParams.adultCount || "");
   queryParmas.append("childCount", searchParams.childCount || "");
   queryParmas.append("page", searchParams.page || "");
+
+  // sorting logic here
+
+  queryParmas.append("maxPrice", searchParams.maxPrice || "");
+  queryParmas.append("sortOption", searchParams.sortOption || "");
+
+  searchParams.facilities?.forEach((facility) =>
+    queryParmas.append("facilities", facility)
+  );
+
+  searchParams.types?.forEach((type) => queryParmas.append("types", type));
+  searchParams.stars?.forEach((star) => queryParmas.append("stars", star));
 
   const response = await fetch(
     `${API_BASE_URL}/api/hotels/search?${queryParmas}`
@@ -156,3 +173,8 @@ export const searchHotels = async (searchParams: SearchParams) => {
 
   return response.json();
 };
+
+
+ 
+
+ 
