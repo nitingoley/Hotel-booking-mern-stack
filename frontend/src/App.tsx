@@ -7,6 +7,8 @@ import AddHotels from "./pages/AddHotels";
 import MyHotels from "./pages/MyHotels";
 import EditHotel from "./pages/EditHotels";
 import Search from "./pages/Seacrh";
+import Details from "./pages/Details";
+import HomePage from "./pages/Home";
 
 function App() {
   const { isLoggedIn } = useAppContext();
@@ -17,7 +19,7 @@ function App() {
           path="/"
           element={
             <Layout>
-              <p>Home page</p>
+              <h1 className="text-red-500 font-bold text-2xl">Home Page Pending.....</h1>
             </Layout>
           }
         />
@@ -42,6 +44,14 @@ function App() {
           element={
             <Layout>
               <Search />
+            </Layout>
+          }
+        />
+          <Route
+          path="/detail/:hotelId"
+          element={
+            <Layout>
+              <Details />
             </Layout>
           }
         />

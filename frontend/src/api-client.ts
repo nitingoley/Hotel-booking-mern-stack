@@ -174,7 +174,15 @@ export const searchHotels = async (searchParams: SearchParams) => {
   return response.json();
 };
 
+// search hotel details by id
+export const SearchHotelDetails = async (
+  hotelId: string
+) => {
+  const response = await fetch(`${API_BASE_URL}/api/hotels/${hotelId}`);
 
- 
+  if (!response.ok) {
+    throw new Error("Error for fetching hotels");
+  }
 
- 
+  return response.json();
+};
