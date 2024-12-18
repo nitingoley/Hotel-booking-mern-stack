@@ -16,6 +16,18 @@ export interface HotelType {
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE || "";
 
+export const fetchCurrentUser = async () => {
+  const response = await fetch(`${API_BASE_URL}/api/users/me`, {
+    credentials: "include",
+  });
+
+  if (!response.ok) {
+    throw new Error("Error fetching users!");
+  }
+
+  return response.json();
+};
+
 export const register = async (formData: RegisterFormData) => {
   const response = await fetch(`${API_BASE_URL}/api/users/register`, {
     method: "POST",
@@ -175,9 +187,7 @@ export const searchHotels = async (searchParams: SearchParams) => {
 };
 
 // search hotel details by id
-export const SearchHotelDetails = async (
-  hotelId: string
-) => {
+export const SearchHotelDetails = async (hotelId: string) => {
   const response = await fetch(`${API_BASE_URL}/api/hotels/${hotelId}`);
 
   if (!response.ok) {
