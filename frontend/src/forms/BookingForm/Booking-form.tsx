@@ -17,7 +17,6 @@ const Bookingform = ({ currentUser }: Props) => {
         firstName: currentUser.firstName,
         lastName: currentUser.lastName,
         email: currentUser.email,
-        
     }
   });
 
@@ -57,6 +56,11 @@ const Bookingform = ({ currentUser }: Props) => {
             className="mt-1 border rounded w-full py-2 px-3 text-gray-700 bg-gray-200 font-normal"
           />
         </label>
+      </div>
+
+      <div className="space-y-2">
+        <h2 className="text-xl font-semibold">Your Price Summary</h2>
+    
       </div>
     </form>
   );

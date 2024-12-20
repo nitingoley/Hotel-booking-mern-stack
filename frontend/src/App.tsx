@@ -10,6 +10,7 @@ import Search from "./pages/Seacrh";
 import Details from "./pages/Details";
 import HomePage from "./pages/Home";
 import Booking from "./pages/Booking";
+import Home from "./pages/Home";
 
 function App() {
   const { isLoggedIn } = useAppContext();
@@ -20,8 +21,8 @@ function App() {
           path="/"
           element={
             <Layout>
-              <h1 className="text-red-500 font-bold text-2xl">Home Page Pending.....</h1>
-            </Layout>
+              <Home />
+             </Layout>
           }
         />
         <Route

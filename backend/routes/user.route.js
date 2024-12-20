@@ -7,21 +7,22 @@ import verifyToken from "../middleware/auth.js";
 
 
 
-router.get("/me" , verifyToken , async(req  , res)=>{
-  const userId =req.userId;
+router.get("/me", verifyToken, async (req, res) => {
+  const userId = req.userId;
 
   try {
     const user = await User.findById(userId).select("-password");
 
-    if(!user) {
-      res.status(400).json({message: "User not found"});
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
     }
 
     res.json(user);
   } catch (error) {
-    return res.status(500).json({ message: "Something went wrong !" });
+    console.error("Error fetching user:", error);
+    return res.status(500).json({ message: "Something went wrong!" });
   }
-})
+});
 
 
 router.post(

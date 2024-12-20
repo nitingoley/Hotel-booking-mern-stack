@@ -11,7 +11,12 @@ import hotelRoute from "./routes/my-hotels.js";
 import hotelSearchRoute from "./routes/hotel.js";
 import path from "path";
 import { fileURLToPath } from "url";
-import { v2 as cloudinary } from "cloudinary";
+import { v2 as cloudinary } from "cloudinary"; 
+import Stripe from "stripe";
+
+
+
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 // config cloudinary & varible
 
